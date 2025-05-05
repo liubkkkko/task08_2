@@ -1,0 +1,6 @@
+.terraform/
+*.tfstate
+*.tfstate.*
+*.tfplan
+app_content.tar.gz # Exclude the generated archive
+.terraform.lock.hcl
