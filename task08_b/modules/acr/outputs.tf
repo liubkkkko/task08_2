@@ -1,3 +1,5 @@
+# modules/acr/outputs.tf
+
 output "id" {
   description = "The ID of the Azure Container Registry."
   value       = azurerm_container_registry.main.id

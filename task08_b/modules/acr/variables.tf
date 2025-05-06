@@ -1,3 +1,5 @@
+# modules/acr/variables.tf
+
 variable "location" {
   type        = string
   description = "Azure region."
@@ -38,13 +40,19 @@ variable "app_archive_blob_url" {
   description = "URL of the application archive blob in Azure Storage."
 }
 
-variable "app_archive_container_sas" {
-  type        = string
-  description = "SAS token granting read access to the storage container holding the archive."
-  sensitive   = true
-}
+# variable "app_archive_container_sas" {
+#   type        = string
+#   description = "SAS token granting read access to the storage container holding the archive."
+#   sensitive   = true
+# }
 
 variable "app_archive_blob_name" {
   type        = string
   description = "Name of the blob archive file within the container."
+}
+
+variable "app_archive_blob_sas_token" {
+  type        = string
+  description = "SAS token granting read access to the specific application archive blob."
+  sensitive   = true # Make sure no trailing hyphen here
 }

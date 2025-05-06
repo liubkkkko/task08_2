@@ -14,11 +14,11 @@ variable "tags" {
   description = "Common tags to apply to all resources."
 }
 
-variable "arm_client_id" {
-  type        = string
-  description = "Client ID for the Azure Service Principal (used for KV access policy)."
-  sensitive   = true
-}
+#variable "arm_client_id" {
+#  type        = string
+#  description = "Client ID for the Azure Service Principal (used for KV access policy)."
+#  sensitive   = true
+#}
 
 # variable "arm_client_secret" { # Not strictly needed if using Azure CLI auth, but might be used for SP login
 #   type        = string
@@ -26,15 +26,15 @@ variable "arm_client_id" {
 #   sensitive = true
 # }
 
-variable "arm_subscription_id" {
-  type        = string
-  description = "Azure Subscription ID."
-}
+#variable "arm_subscription_id" {
+#  type        = string
+#  description = "Azure Subscription ID."
+#}
 
-variable "arm_tenant_id" {
-  type        = string
-  description = "Azure Tenant ID."
-}
+#variable "arm_tenant_id" {
+#  type        = string
+#  description = "Azure Tenant ID."
+#}
 
 variable "aci_redis_sku" {
   type        = string

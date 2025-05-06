@@ -1,17 +1,16 @@
 # Data source to archive the application content
 data "archive_file" "app_content" {
-  type        = "tar.gz" # Use tar.gz as requested
+  type        = "tar.gz"
   source_dir  = var.app_content_path
-  output_path = "${path.root}/app_content.tar.gz" # Temporary path for the archive file
+  output_path = "${path.root}/app_content.tar.gz"
 }
 
 # Time resources for SAS token validity
 resource "time_static" "sas_start_time" {
-  # Keep the start time constant across applies unless destroyed
 }
 
 resource "time_offset" "sas_expiry_time" {
-  offset_days  = 1 # SAS token valid for 1 day
+  offset_days  = 1
   base_rfc3339 = time_static.sas_start_time.rfc3339
 }
 
@@ -29,7 +28,7 @@ resource "azurerm_storage_account" "main" {
 resource "azurerm_storage_container" "main" {
   name                  = var.container_name
   storage_account_name  = azurerm_storage_account.main.name
-  container_access_type = "private" # As requested
+  container_access_type = "private"
 }
 
 # Storage Blob (upload the archive)
@@ -38,21 +37,20 @@ resource "azurerm_storage_blob" "app_archive" {
   storage_account_name   = azurerm_storage_account.main.name
   storage_container_name = azurerm_storage_container.main.name
   type                   = "Block"
-  source                 = data.archive_file.app_content.output_path # Use the path from the archive data source
+  source                 = data.archive_file.app_content.output_path
 
-  # Ensure the archive is created before trying to upload
   depends_on = [data.archive_file.app_content]
 }
 
-# Data source to generate SAS token for the container (needed by ACR Task)
-data "azurerm_storage_account_sas" "container_sas" {
+# Data source to generate SAS token for the specific application archive BLOB
+data "azurerm_storage_account_sas" "app_archive_blob_sas" {
   connection_string = azurerm_storage_account.main.primary_connection_string
   https_only        = true
 
   resource_types {
     service   = false
-    container = true
-    object    = true
+    container = false
+    object    = true # SAS is for a blob object
   }
 
   services {
@@ -62,33 +60,32 @@ data "azurerm_storage_account_sas" "container_sas" {
     file  = false
   }
 
-  # Use 'start' and 'expiry' instead of 'start_date'/'expiry_date'
   start  = time_static.sas_start_time.rfc3339
   expiry = time_offset.sas_expiry_time.rfc3339
 
-  # Define ALL permissions explicitly
+  # CORRECTED: All required boolean permissions for azurerm_storage_account_sas
   permissions {
     read    = true
     write   = false
     delete  = false
-    list    = true
+    list    = false
     add     = false
     create  = false
     update  = false
     process = false
-    tag     = false # Explicitly add required boolean
-    filter  = false # Explicitly add required boolean
+    tag     = false # Added
+    filter  = false # Added
   }
 
   depends_on = [
-    azurerm_storage_account.main,
+    azurerm_storage_blob.app_archive,
     time_static.sas_start_time,
     time_offset.sas_expiry_time
   ]
 }
 
-# Data source to construct the full blob URL needed by ACR Task
-data "azurerm_storage_account_blob_container_sas" "app_blob_sas_for_acr" {
+# Data source to generate SAS token for the entire CONTAINER
+data "azurerm_storage_account_blob_container_sas" "container_sas_for_acr_task_or_other_needs" {
   connection_string = azurerm_storage_account.main.primary_connection_string
   container_name    = azurerm_storage_container.main.name
   https_only        = true
@@ -96,22 +93,17 @@ data "azurerm_storage_account_blob_container_sas" "app_blob_sas_for_acr" {
   start  = time_static.sas_start_time.rfc3339
   expiry = time_offset.sas_expiry_time.rfc3339
 
-  # Define ALL permissions explicitly
   permissions {
     read   = true
-    add    = false # Explicitly add required boolean
-    create = false # Explicitly add required boolean
-    write  = false # Explicitly add required boolean
-    delete = false # Explicitly add required boolean
+    add    = false
+    create = false
+    write  = false
+    delete = false
     list   = true
-    # Note: 'tag' and 'move' might also be required in newer provider versions or specific scenarios,
-    # but based on the error message, these are the missing ones. Add them if validate still complains.
-    # tag = false
-    # move = false
   }
 
   depends_on = [
-    azurerm_storage_blob.app_archive, # Ensure blob exists
+    azurerm_storage_container.main,
     time_static.sas_start_time,
     time_offset.sas_expiry_time
   ]

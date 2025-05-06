@@ -46,21 +46,24 @@ module "aci_redis" {
   depends_on = [module.keyvault] # Ensure KV exists before trying to write secrets
 }
 
+# task08_b/main.tf
+
 module "acr" {
   source = "./modules/acr"
 
-  location                  = azurerm_resource_group.main.location
-  tags                      = var.tags
-  resource_group_name       = azurerm_resource_group.main.name
-  acr_name                  = local.acr_name
-  acr_sku                   = var.acr_sku
-  docker_image_name         = local.docker_image_name
-  docker_image_tag          = var.docker_image_tag
-  app_archive_blob_url      = module.storage.blob_url            # Pass the blob URL
-  app_archive_container_sas = module.storage.container_sas_token # Pass SAS token
-  app_archive_blob_name     = local.app_archive_blob_name
+  location                     = azurerm_resource_group.main.location
+  tags                         = var.tags
+  resource_group_name          = azurerm_resource_group.main.name
+  acr_name                     = local.acr_name
+  acr_sku                      = var.acr_sku
+  docker_image_name            = local.docker_image_name
+  docker_image_tag             = var.docker_image_tag
+  app_archive_blob_url         = module.storage.blob_url         # URL of the blob
+  app_archive_blob_sas_token = module.storage.blob_sas_token   # SAS token for the blob
+  # app_archive_container_sas = module.storage.container_sas_token # No longer primary for ACR task
+  app_archive_blob_name        = local.app_archive_blob_name     # Still useful for other refs if needed
 
-  depends_on = [module.storage] # Ensure archive blob exists before build task
+  depends_on = [module.storage] 
 }
 
 module "aca" {
