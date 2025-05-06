@@ -5,7 +5,7 @@ resource "azurerm_container_registry" "main" {
   resource_group_name = var.resource_group_name
   location            = var.location
   sku                 = var.acr_sku
-  admin_enabled       = false # Use Managed Identities or RBAC for image pull
+  admin_enabled       = false
   tags                = var.tags
 }
 
@@ -21,21 +21,16 @@ resource "azurerm_container_registry_task" "build_app_image" {
     dockerfile_path      = "Dockerfile"
     image_names          = ["${var.docker_image_name}:${var.docker_image_tag}"]
     context_path         = "${var.app_archive_blob_url}?${var.app_archive_blob_sas_token}"
-    context_access_token = null # Required by schema, but null for blob SAS
+    context_access_token = null # Required by schema for the block, but value is null for blob SAS
   }
 
-  # Only the timer_trigger is needed to ensure the task runs on creation/update
-  # as the context (blob) changes or the task definition changes.
   timer_trigger {
-    name     = "on-create-update-trigger" # A descriptive name
-    schedule = "R1/2099-12-31T00:00:00Z"  # Effectively run once far in the future (triggered by creation/update of this resource)
+    name     = "on-create-update-trigger"
+    schedule = "R1/2099-12-31T00:00:00Z"
     enabled  = true
   }
 
-  # REMOVED source_trigger block as it's not needed for blob context and requires more args if present
-  # REMOVED base_image_trigger block as it's not explicitly required by the task
-
-  agent_setting { # Optional: configure agent if defaults are not suitable
+  agent_setting {
     cpu = 2
   }
   
