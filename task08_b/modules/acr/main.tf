@@ -21,12 +21,14 @@ resource "azurerm_container_registry_task" "build_app_image" {
     dockerfile_path      = "Dockerfile"
     image_names          = ["${var.docker_image_name}:${var.docker_image_tag}"]
     context_path         = "${var.app_archive_blob_url}?${var.app_archive_blob_sas_token}"
-    context_access_token = null # Required by schema for the block, but value is null for blob SAS
+    # Передаємо сам SAS-токен, оскільки поле обов'язкове і порожній рядок не спрацював.
+    context_access_token = var.app_archive_blob_sas_token 
   }
 
   timer_trigger {
-    name     = "on-create-update-trigger"
-    schedule = "R1/2099-12-31T00:00:00Z"
+    name     = "yearly-trigger" # Або будь-яке інше описове ім'я
+    # CORRECTED: Valid CRON expression - e.g., "0 0 1 1 *" (At 00:00 on day-of-month 1 and on month 1)
+    schedule = "0 0 1 1 *" 
     enabled  = true
   }
 
