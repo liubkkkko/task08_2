@@ -13,11 +13,13 @@ output "login_server" {
   value       = azurerm_container_registry.main.login_server
 }
 
-output "acr_task_id" { # Додано для time_sleep
-  description = "The ID of the ACR task."
+output "task_id" {
+  description = "The ID of the ACR task definition."
   value       = azurerm_container_registry_task.build_app_image.id
 }
-output "task_id" {
-  description = "The ID of the ACR task."
-  value       = azurerm_container_registry_task.build_app_image.id
+
+# Додаємо вихід для ресурсу запуску, щоб на нього можна було посилатися
+output "task_initial_run_id" {
+  description = "The ID of the ACR task initial schedule run now resource."
+  value       = azurerm_container_registry_task_schedule_run_now.trigger_initial_build.id
 }

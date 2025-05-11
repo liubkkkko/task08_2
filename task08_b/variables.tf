@@ -77,13 +77,13 @@ variable "aks_default_node_pool_instance_count" {
 variable "aks_default_node_pool_vm_size" {
   type        = string
   description = "VM size for the default AKS node pool instances."
-  default     = "Standard_D2ads_v5" # CORRECTED as per task
+  default     = "Standard_D2ads_v5" # As per task requirements
 }
 
 variable "aks_default_node_pool_os_disk_type" {
   type        = string
   description = "OS disk type for the default AKS node pool."
-  default     = "Ephemeral"
+  default     = "Managed"
 }
 
 variable "docker_image_tag" {
@@ -95,7 +95,7 @@ variable "docker_image_tag" {
 variable "app_source_code_path" {
   type        = string
   description = "Path to the application source code directory."
-  default     = "./application" # Ensure this directory exists with your app files
+  default     = "./application"
 }
 
 variable "k8s_manifests_path" {
@@ -104,8 +104,8 @@ variable "k8s_manifests_path" {
   default     = "./k8s-manifests"
 }
 
-variable "permission_propagation_delay" {
+variable "setup_completion_delay" {
   type        = string
-  description = "Delay to allow for permission propagation and ACR task completion."
-  default     = "120s"
+  description = "Delay to allow for permission propagation, ACR task completion, and DNS propagation."
+  default     = "300s" # 5 minutes
 }

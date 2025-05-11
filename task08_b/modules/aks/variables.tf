@@ -43,7 +43,6 @@ variable "default_node_pool_os_disk_type" {
   description = "OS Disk type for the default node pool ('Managed' or 'Ephemeral')."
 }
 
-# ВИПРАВЛЕНО: Узгоджено ім'я змінної з використанням у modules/aks/main.tf
 variable "kubelet_uami_id" {
   type        = string
   description = "The ID of the User Assigned Managed Identity to be used by AKS (for Control Plane and Kubelet)."
@@ -52,4 +51,20 @@ variable "kubelet_uami_id" {
 variable "tenant_id" {
   type        = string
   description = "Azure Tenant ID."
+}
+
+# ВИДАЛЕНО: змінна key_vault_secrets_provider_enabled, оскільки вона не використовується.
+# variable "key_vault_secrets_provider_enabled" {
+#   description = "Flag to indicate if key_vault_secrets_provider is configured."
+#   type        = bool
+#   default     = true 
+# }
+variable "kubelet_uami_client_id" {
+  type        = string
+  description = "The Client ID of the User Assigned Managed Identity explicitly assigned to Kubelet."
+}
+
+variable "kubelet_uami_object_id" {
+  type        = string
+  description = "The Object ID (Principal ID) of the User Assigned Managed Identity explicitly assigned to Kubelet."
 }
