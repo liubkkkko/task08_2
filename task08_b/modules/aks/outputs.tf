@@ -1,3 +1,5 @@
+# task08_b/modules/aks/outputs.tf
+
 output "id" {
   description = "The ID of the AKS cluster."
   value       = azurerm_kubernetes_cluster.main.id
@@ -8,7 +10,6 @@ output "name" {
   value       = azurerm_kubernetes_cluster.main.name
 }
 
-# Output required for Kubernetes and Kubectl provider configuration
 output "kube_config" {
   description = "Kubernetes configuration structure."
   value = {
@@ -20,8 +21,8 @@ output "kube_config" {
   sensitive = true
 }
 
-output "kubelet_identity_object_id" {
-  description = "The Object ID of the Kubelet identity used by the AKS cluster nodes."
-  # This ID is used by the SecretProviderClass to access Key Vault when useVMManagedIdentity is true
-  value = azurerm_kubernetes_cluster.main.kubelet_identity[0].object_id
+# Цей вихід може бути корисним, якщо ми хочемо отримати object_id системної ідентичності control plane
+output "control_plane_identity_principal_id" {
+  description = "The Principal ID of the System Assigned Identity of the AKS control plane."
+  value       = azurerm_kubernetes_cluster.main.identity[0].principal_id # Якщо identity.type = "SystemAssigned"
 }

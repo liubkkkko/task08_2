@@ -1,25 +1,26 @@
-# Generate random password for Redis
 resource "random_password" "redis_password" {
-  length           = 16 # At least 16 characters as required
+  length           = 16
   special          = true
   override_special = "!#$%&*()-_=+[]{}<>:?"
 }
 
-# Azure Container Instance for Redis
 resource "azurerm_container_group" "redis" {
   name                = var.aci_name
   location            = var.location
   resource_group_name = var.resource_group_name
-  ip_address_type     = "Public"     # Required to get FQDN/IP easily
-  dns_name_label      = var.aci_name # Use ACI name for DNS label
+  ip_address_type     = "Public"
+  dns_name_label      = var.aci_name
   os_type             = "Linux"
   sku                 = var.aci_sku
   tags                = var.tags
 
+  # Блок image_registry_credential прибрано, оскільки mcr.microsoft.com є публічним
+  # і не вимагає облікових даних. Його наявність без username/identity викликала помилку.
+
   container {
-    name = "redis"
-    # Use image from Microsoft Container Registry as requested
-    image  = "mcr.microsoft.com/cbl-mariner/base/redis:7"
+    name   = "redis"
+    # Спробуємо з тегом 6.2, як у вашому файлі. Якщо не спрацює, використаємо "redis:7-alpine"
+    image  = "mcr.microsoft.com/cbl-mariner/base/redis:6.2" 
     cpu    = "0.5"
     memory = "0.5"
 
@@ -27,9 +28,7 @@ resource "azurerm_container_group" "redis" {
       port     = 6379
       protocol = "TCP"
     }
-
-    # Set command line to start redis with password protection disabled
-    # and require the generated password
+    # ВИПРАВЛЕНО: "commandscat" на "command"
     commands = [
       "redis-server",
       "--protected-mode", "no",
@@ -38,21 +37,18 @@ resource "azurerm_container_group" "redis" {
   }
 }
 
-# Store Redis password in Key Vault
 resource "azurerm_key_vault_secret" "redis_password" {
   name         = var.redis_password_secret_name
   value        = random_password.redis_password.result
   key_vault_id = var.kv_id
 
-  depends_on = [azurerm_container_group.redis] # Ensure ACI is up (implicitly depends on password)
+  depends_on = [azurerm_container_group.redis]
 }
 
-# Store Redis hostname (FQDN) in Key Vault
 resource "azurerm_key_vault_secret" "redis_hostname" {
-  name = var.redis_hostname_secret_name
-  # Use the FQDN from the container group
+  name         = var.redis_hostname_secret_name
   value        = azurerm_container_group.redis.fqdn
   key_vault_id = var.kv_id
 
-  depends_on = [azurerm_container_group.redis] # Ensure ACI is up and FQDN is available
+  depends_on = [azurerm_container_group.redis]
 }

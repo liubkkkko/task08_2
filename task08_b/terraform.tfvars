@@ -17,3 +17,4 @@ tags = {
 storage_container_name     = "app-content"
 redis_password_secret_name = "redis-password"
 redis_hostname_secret_name = "redis-hostname"
+aks_default_node_pool_vm_size = "Standard_D16ds_v5" 

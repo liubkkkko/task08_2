@@ -1,5 +1,3 @@
-# modules/aks/variables.tf
-
 variable "location" {
   type        = string
   description = "Azure region."
@@ -45,14 +43,10 @@ variable "default_node_pool_os_disk_type" {
   description = "OS Disk type for the default node pool ('Managed' or 'Ephemeral')."
 }
 
-variable "kv_id" {
+# ВИПРАВЛЕНО: Узгоджено ім'я змінної з використанням у modules/aks/main.tf
+variable "kubelet_uami_id" {
   type        = string
-  description = "ID of the Azure Key Vault."
-}
-
-variable "acr_id" {
-  type        = string
-  description = "ID of the Azure Container Registry."
+  description = "The ID of the User Assigned Managed Identity to be used by AKS (for Control Plane and Kubelet)."
 }
 
 variable "tenant_id" {

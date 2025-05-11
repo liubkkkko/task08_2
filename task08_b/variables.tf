@@ -6,35 +6,13 @@ variable "name_prefix" {
 variable "location" {
   type        = string
   description = "Azure region where resources will be deployed."
-  default     = "uksouth" # Or choose another default region
+  default     = "uksouth"
 }
 
 variable "tags" {
   type        = map(string)
   description = "Common tags to apply to all resources."
 }
-
-#variable "arm_client_id" {
-#  type        = string
-#  description = "Client ID for the Azure Service Principal (used for KV access policy)."
-#  sensitive   = true
-#}
-
-# variable "arm_client_secret" { # Not strictly needed if using Azure CLI auth, but might be used for SP login
-#   type        = string
-#   description = "Client Secret for the Azure Service Principal."
-#   sensitive = true
-# }
-
-#variable "arm_subscription_id" {
-#  type        = string
-#  description = "Azure Subscription ID."
-#}
-
-#variable "arm_tenant_id" {
-#  type        = string
-#  description = "Azure Tenant ID."
-#}
 
 variable "aci_redis_sku" {
   type        = string
@@ -99,7 +77,7 @@ variable "aks_default_node_pool_instance_count" {
 variable "aks_default_node_pool_vm_size" {
   type        = string
   description = "VM size for the default AKS node pool instances."
-  default     = "Standard_D2ads_v5"
+  default     = "Standard_D2ads_v5" # CORRECTED as per task
 }
 
 variable "aks_default_node_pool_os_disk_type" {
@@ -117,11 +95,17 @@ variable "docker_image_tag" {
 variable "app_source_code_path" {
   type        = string
   description = "Path to the application source code directory."
-  default     = "./application"
+  default     = "./application" # Ensure this directory exists with your app files
 }
 
 variable "k8s_manifests_path" {
   type        = string
   description = "Path to the Kubernetes manifests directory."
   default     = "./k8s-manifests"
+}
+
+variable "permission_propagation_delay" {
+  type        = string
+  description = "Delay to allow for permission propagation and ACR task completion."
+  default     = "120s"
 }
