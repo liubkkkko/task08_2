@@ -18,7 +18,7 @@ data "kubernetes_secret" "redis_secrets_check" {
     name      = "redis-secrets" # Ім'я секрету, яке створює ваш SecretProviderClass
     namespace = "default"       # Вкажіть namespace, якщо він не default
   }
-  
+
   depends_on = [
     kubectl_manifest.secret_provider_class # Переконуємося, що SPC створено
   ]
@@ -54,7 +54,7 @@ resource "kubectl_manifest" "app_service" {
 
 # (Опціонально) Додаткова затримка перед отриманням IP, якщо попередній apply показав проблеми
 resource "time_sleep" "wait_for_service_ip_propagation_k8s" { # Перейменовано, щоб уникнути конфлікту
-  create_duration = "60s" # 60 секунд, може знадобитися більше, якщо IP довго призначається
+  create_duration = "60s"                                     # 60 секунд, може знадобитися більше, якщо IP довго призначається
   depends_on      = [kubectl_manifest.app_service]
 }
 

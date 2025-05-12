@@ -65,7 +65,7 @@ data "azurerm_storage_account_sas" "app_archive_blob_sas" {
   expiry = time_offset.sas_expiry_time.rfc3339
 
   permissions {
-    read    = true
+    read = true
     # Other permissions false as not needed for ACR task to read
     write   = false
     delete  = false

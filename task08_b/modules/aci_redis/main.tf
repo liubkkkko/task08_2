@@ -18,9 +18,9 @@ resource "azurerm_container_group" "redis" {
   # і не вимагає облікових даних. Його наявність без username/identity викликала помилку.
 
   container {
-    name   = "redis"
+    name = "redis"
     # Спробуємо з тегом 6.2, як у вашому файлі. Якщо не спрацює, використаємо "redis:7-alpine"
-    image  = "mcr.microsoft.com/cbl-mariner/base/redis:6.2" 
+    image  = "mcr.microsoft.com/cbl-mariner/base/redis:6.2"
     cpu    = "0.5"
     memory = "0.5"
 

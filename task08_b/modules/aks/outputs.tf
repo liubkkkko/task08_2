@@ -34,5 +34,5 @@ output "DEBUG_key_vault_secrets_provider_raw" {
   description = "DEBUG: Raw output of the key_vault_secrets_provider block."
   # Припускаємо, що key_vault_secrets_provider є блоком, а не списком.
   # Якщо виникає помилка, що очікується індекс, повернемо [0].
-  value       = azurerm_kubernetes_cluster.main.key_vault_secrets_provider
+  value = azurerm_kubernetes_cluster.main.key_vault_secrets_provider
 }

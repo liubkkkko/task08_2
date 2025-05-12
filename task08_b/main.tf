@@ -20,7 +20,7 @@ resource "azurerm_role_assignment" "aks_uami_identity_operator_self" {
 }
 
 module "storage" {
-  source = "./modules/storage"
+  source                   = "./modules/storage"
   location                 = azurerm_resource_group.main.location
   tags                     = var.tags
   resource_group_name      = azurerm_resource_group.main.name
@@ -32,7 +32,7 @@ module "storage" {
 }
 
 module "keyvault" {
-  source = "./modules/keyvault"
+  source                 = "./modules/keyvault"
   location               = azurerm_resource_group.main.location
   tags                   = var.tags
   resource_group_name    = azurerm_resource_group.main.name
@@ -43,7 +43,7 @@ module "keyvault" {
 }
 
 module "aci_redis" {
-  source = "./modules/aci_redis"
+  source                     = "./modules/aci_redis"
   location                   = azurerm_resource_group.main.location
   tags                       = var.tags
   resource_group_name        = azurerm_resource_group.main.name
@@ -56,7 +56,7 @@ module "aci_redis" {
 }
 
 module "acr" {
-  source = "./modules/acr"
+  source                     = "./modules/acr"
   location                   = azurerm_resource_group.main.location
   tags                       = var.tags
   resource_group_name        = azurerm_resource_group.main.name
@@ -78,7 +78,7 @@ resource "azurerm_role_assignment" "aks_uami_acr_pull" {
 }
 
 module "aks" {
-  source = "./modules/aks"
+  source                           = "./modules/aks"
   location                         = azurerm_resource_group.main.location
   tags                             = var.tags
   resource_group_name              = azurerm_resource_group.main.name
@@ -88,12 +88,12 @@ module "aks" {
   default_node_pool_instance_count = var.aks_default_node_pool_instance_count
   default_node_pool_vm_size        = var.aks_default_node_pool_vm_size
   default_node_pool_os_disk_type   = var.aks_default_node_pool_os_disk_type
-  
-  kubelet_uami_id          = azurerm_user_assigned_identity.aks_kubelet_uami.id
-  kubelet_uami_client_id   = azurerm_user_assigned_identity.aks_kubelet_uami.client_id
-  kubelet_uami_object_id   = azurerm_user_assigned_identity.aks_kubelet_uami.principal_id
-  tenant_id                = data.azurerm_client_config.current.tenant_id
-  
+
+  kubelet_uami_id        = azurerm_user_assigned_identity.aks_kubelet_uami.id
+  kubelet_uami_client_id = azurerm_user_assigned_identity.aks_kubelet_uami.client_id
+  kubelet_uami_object_id = azurerm_user_assigned_identity.aks_kubelet_uami.principal_id
+  tenant_id              = data.azurerm_client_config.current.tenant_id
+
   depends_on = [
     azurerm_user_assigned_identity.aks_kubelet_uami,
     azurerm_role_assignment.aks_uami_identity_operator_self,
@@ -129,7 +129,7 @@ resource "time_sleep" "wait_for_setup_completion" {
 }
 
 module "aca" {
-  source = "./modules/aca"
+  source                     = "./modules/aca"
   location                   = azurerm_resource_group.main.location
   tags                       = var.tags
   resource_group_name        = azurerm_resource_group.main.name
@@ -153,7 +153,7 @@ module "aca" {
 }
 
 module "k8s" {
-  source   = "./modules/k8s"
+  source = "./modules/k8s"
   providers = {
     kubernetes = kubernetes.aks
     kubectl    = kubectl.aks
@@ -166,8 +166,8 @@ module "k8s" {
   redis_password_secret_name = var.redis_password_secret_name
   tenant_id                  = data.azurerm_client_config.current.tenant_id
   # Тепер SecretProviderClass буде використовувати ClientID нашої aks_kubelet_uami
-  aks_kv_access_identity_id  = azurerm_user_assigned_identity.aks_kubelet_uami.client_id
-  k8s_manifests_path         = var.k8s_manifests_path
+  aks_kv_access_identity_id = azurerm_user_assigned_identity.aks_kubelet_uami.client_id
+  k8s_manifests_path        = var.k8s_manifests_path
   depends_on = [
     module.aks,
     module.aci_redis,
