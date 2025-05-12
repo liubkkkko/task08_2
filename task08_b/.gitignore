@@ -1,6 +1,25 @@
-.terraform/
+# Terraform state files
+terraform.tfstate
+terraform.tfstate.*
 *.tfstate
 *.tfstate.*
+
+# Terraform plan files
 *.tfplan
-app_content.tar.gz # Exclude the generated archive
+tfplan
+
+# Terraform provider lock file
 .terraform.lock.hcl
+
+# Terraform runtime directory
+.terraform/
+
+# Archives
+*.tar.gz
+*.zip
+
+# Other OS-specific or editor-specific files
+.DS_Store
+*.pem
+*~
+*.swp

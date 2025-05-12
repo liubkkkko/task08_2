@@ -101,13 +101,6 @@ module "aks" {
   ]
 }
 
-# ВИДАЛЯЄМО ЦЕЙ DATA БЛОК, ВІН БІЛЬШЕ НЕ ПОТРІБЕН
-# data "azurerm_user_assigned_identity" "aks_addon_secrets_provider_uami" {
-#   name                = "azurekeyvaultsecretsprovider-cmtr-13f58f43-mod8b-aks" 
-#   resource_group_name = module.aks.node_resource_group_name
-#   depends_on          = [module.aks]
-# }
-
 resource "azurerm_key_vault_access_policy" "aks_kubelet_uami_kv_access" { # Перейменовано для ясності
   key_vault_id       = module.keyvault.id
   tenant_id          = data.azurerm_client_config.current.tenant_id

@@ -83,7 +83,7 @@ variable "aks_default_node_pool_vm_size" {
 variable "aks_default_node_pool_os_disk_type" {
   type        = string
   description = "OS disk type for the default AKS node pool."
-  default     = "Managed"
+  default     = "Ephemeral"
 }
 
 variable "docker_image_tag" {
