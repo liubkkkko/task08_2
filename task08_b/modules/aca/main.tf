@@ -33,13 +33,13 @@ resource "azurerm_container_app_environment" "main" {
   # If using a Standard plan, you'd need:
   # log_analytics_workspace_id = data.azurerm_log_analytics_workspace.example.id
   tags = var.tags
-   workload_profile {
+  workload_profile {
     name                  = "Consumption" # Ім'я профілю, для Consumption можна назвати так
     workload_profile_type = "Consumption" # Явно вказуємо тип
     minimum_count         = 0             # Типові значення для Consumption
     maximum_count         = 10            # Типові значення для Consumption (або як вимагає завдання, якщо є обмеження)
-                                        # У прикладі було 1, але для Consumption зазвичай 0-10 або 0-30
-                                        # Завдання не вказує min/max, тому 0-10 має бути безпечним.
+    # У прикладі було 1, але для Consumption зазвичай 0-10 або 0-30
+    # Завдання не вказує min/max, тому 0-10 має бути безпечним.
   }
 }
 
