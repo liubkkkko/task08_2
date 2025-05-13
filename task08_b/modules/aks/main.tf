@@ -10,7 +10,7 @@ resource "azurerm_kubernetes_cluster" "main" {
     node_count                  = var.default_node_pool_instance_count
     vm_size                     = var.default_node_pool_vm_size
     os_disk_type                = var.default_node_pool_os_disk_type
-    os_disk_size_gb             = (var.default_node_pool_os_disk_type == "Ephemeral") ? null : 30
+    os_disk_size_gb             = 30
     enable_host_encryption      = false
     tags                        = var.tags
     temporary_name_for_rotation = "temp${replace(var.default_node_pool_name, "-", "")}"
